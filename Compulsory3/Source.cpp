@@ -2,6 +2,8 @@
 
 // Making connect 4 shiddass
 
+
+
 // For the game
 char board[7][7] = { { ' ',' ',' ',' ',' ',' ',' ' },
 					 { '.','.','.','.','.','.','.' },
@@ -11,28 +13,33 @@ char board[7][7] = { { ' ',' ',' ',' ',' ',' ',' ' },
 					 { '.','.','.','.','.','.','.' },
 					 { '.','.','.','.','.','.','.' } };
 
-char menu();
+char selectColumn[7];
+
+void menu();
 void rules();
 void drawBoard();
 void gaming();
+void resetBoard();
 
 // Universal stuff
 void clearCin();
 
+// Main wil take the role as a menu
 int main() {
-	//while (true) {
-		menu();
+	while (true) {
+		int menuChoice{};
 
+
+		switch (menuChoice)
+		{
+		default:
+			break;
+		}
 
 		gaming();
 
-	//}
+	}
 	return 0;
-}
-
-char menu() {
-	rules();
-	return 4;
 }
 
 void rules() {
@@ -64,6 +71,7 @@ void drawBoard() {
 
 void gaming() {
 	drawBoard();
+
 }
 
 void clearCin() {
