@@ -156,7 +156,7 @@ void whoIsGaming() {
 	std::cin >> p1Name;
 	std::cout << std::endl;
 	std::cout << "Player 2: ";
-	std::cout << p2Name;
+	std::cin >> p2Name;
 
 	stats.close();
 }
@@ -190,7 +190,7 @@ void viewStats() {
 }
 
 void quit(){
-	
+	exit(0);
 
 }
 
@@ -218,6 +218,7 @@ void gaming() {
 	char move{};
 	system("csl");
 	while (true) {
+		
 		std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
 		std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
 		std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
@@ -321,16 +322,33 @@ void placeToken(char a) {
 		std::cout << "Something is wrong...\n" << std::endl;
 		break;
 	}
+	winConditions();
 	arrowPosY = 0;
 }
 
 // $$$$$
 void winConditions() {
-	for (int y = 0; y < board.size(); y++) {
+	for (int y = 1; y < board.size(); y++) {
 		for (int x = 0; x < board.at(y).size(); x++) {
+			if (board[y < 4][x] == 'X' || board[y < 4][x] == 'O') {
+				// Check vertically (up and down)
+				if (board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
+					std::cout << "Vertical win" << std::endl;
+					break;
+				}
+				// Check horizontal (left and right)
+				if (board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
 
+				}
 
+			}
+			// Check down right
+			/*if (board[y][x]) {
 
+			}*/
+			
+
+			// Check down left
 		}
 	}
 }
