@@ -41,13 +41,13 @@ char selectColumn = 'v';
 void drawMenu();
 std::string menu[4][2] = { { " ", " 1. Play"},
 							{" ", " 2. Rules"},
-							{" ", " 3. Highscores"},
+							{" ", " 3. Stats"},
 							{" ", " 4. Quit"} };
 
 // This collection is displayed on the menu in some form
 void whoIsGaming(); // Insert name of players, we will try to save them and their scores. Will go to gaming when finished
 void rules(); // Display the rules
-void viewScores(); // Display scores
+void viewStats(); // Display stats
 void quit(); // Terminate program 
 
 // Functions for the game
@@ -60,11 +60,12 @@ void resetBoard(); // Empty the board of tokens
 // Universal stuff
 void clearCin();
 
+// Daddy Johannes explains referencing
 void referenceExample(int& OUTint, char& OUTchar);
 
 // Main wil take the role as a menu
 int main() {
-
+	stats.close();
 	// This is how you make a 2D vector
 	board.push_back(std::vector<char>(7, ' '));
 	board.push_back(std::vector<char>(7, '.'));
@@ -90,6 +91,7 @@ int main() {
 		std::cout << "| |___  | (_) | | | | | | | | | |  __/ | (__  | |_ |_____| |  _| | (_) | | |_| | | |" << std::endl;
 		std::cout << " \\____|  \\___/  |_| |_| |_| |_|  \\___|  \\___|  \\__|        |_|    \\___/   \\__,_| |_|" << std::endl << std::endl << std::endl;
 
+		std::cout << "Use 'w' and 's' to move up or down, press SPACE or ENTER to confirm highlighted option, or you can use the numbers listed." << std::endl;
 		std::cout << arrowPosX << "\t" << arrowPosY << std::endl;
 		drawMenu();
 		menuChoice = _getch();
@@ -106,19 +108,29 @@ int main() {
 				arrowPosY = 0;
 			}
 			break;
+		// User pressed SPACE or ENTER
 		case 13: case 32:
-			if (arrowPosY == 0) {
+			switch (arrowPosY) {
+			// Position 1
+			case 0:
 				whoIsGaming();
 				gaming();
-			}
-			if (arrowPosY == 1) {
+				break;
+			// Position 2
+			case 1:
 				rules();
-			}
-			if (arrowPosY == 2) {
-				viewScores();
-			}
-			if (arrowPosY == 3) {
+				break;
+			// Position 3
+			case 2:
+				viewStats();
+				break;
+			// Position 4
+			case 3:
 				exit(0);
+				break;
+			default:
+				std::cout << "Something is wrong..." << std::endl;
+				break;
 			}
 			break;
 		// Press ESC to close
@@ -126,7 +138,7 @@ int main() {
 			exit(0);
 			break;
 		default:
-			std::cout << "Other button pls." << std::endl;
+			std::cout << "Please use one of the specified inputs to navigate the menu." << std::endl;
 			break;
 		}
 	}
@@ -149,52 +161,52 @@ void whoIsGaming() {
 	stats.close();
 }
 
-// Shall draw the menu and allow user to select a few option
+// Shall draw the menu
 void drawMenu() {
 	for (int i{}; i < 4; i++) {
 		for (int j = 0; j < 2; j++) {
 			if (i == arrowPosY && j == arrowPosX) {
 				menu[i][0] = menuArrow;
-				//std::cout << menu[arrowPosX][arrowPosY];
 			}
 			else {
 				menu[i][0] = " ";
 			}
-			std::cout << menu[i][j];				// Once it's done placing the three slots it goes out of the inner loop
-		}								// and into the outer loop which contains the std::endl at the end of each loop
+			std::cout << menu[i][j];				
+		}								
 		std::cout << std::endl;
 	}
 }
 
 // Show user the rules of the game
 void rules() {
-
+	std::cout << "Connect-four is a 2 player game; you will either play against a human or an AI" << std::endl;
+	std::cout << "(The AI is probably more A than I)" << std::endl;
+	std::cout << "You and your oppoent will drop tokens to the bottom of the board and try to get a line of four." << std::endl;
 }
 
-void viewScores() {
+void viewStats() {
 
+	stats.close();
 }
 
-void quit()
-{
+void quit(){
+	
+
 }
 
 // Draw the playing field
 void drawBoard() {
-	int i = 0;
-	int j = 0;
-
 	arrowPosY = 0; // Set to 0 so the arrow always is at the top of the board
 	
-	for (i = 0; i < board.size(); i++) { // Checks the outer vector
-		for (j = 0; j < board.at(i).size(); j++) { // Checks the vector at position i
-			if (i == 0) { // Only affects to row of the board (I think)
-				board[i][j] = ' '; // Draw an empty space where the arrow pointer was and where it isn't
-				if (i == arrowPosY && j == arrowPosX) { // We draw the arrow pointer at the correct x y position
-					board[i][j] = selectColumn;
+	for (int y = 0; y < board.size(); y++) { // Checks the outer vector, 
+		for (int x = 0; x < board.at(y).size(); x++) { // Checks the vector at position i
+			if (y == 0) { // Only affects top row of the board (I think)
+				board[y][x] = ' '; // Draw an empty space where the arrow pointer was and where it isn't
+				if (y == arrowPosY && x == arrowPosX) { // We draw the arrow pointer at the correct x y position
+					board[y][x] = selectColumn;
 				}
 			}
-			std::cout << "|" << board.at(i).at(j);
+			std::cout << "|" << board.at(y).at(x);
 		}
 		std::cout << "|" << std::endl;
 	}
@@ -204,10 +216,8 @@ void drawBoard() {
 // Main function used for playing the game
 void gaming() {
 	char move{};
-
+	system("csl");
 	while (true) {
-		//std::cout << board.size()<< std::endl;
-		//system("cls");
 		std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
 		std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
 		std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
@@ -229,37 +239,43 @@ void gaming() {
 			}
 			break;
 		// Pressing ENTER will place a token in the column that the player has highlighted
-		// 13 is the key code for ENTER
 		case 13: case 32:
 			std::cout << "You pressed ENTER";
 			placeToken(move);
 			break;
 		// The numbered cases allow user to select a column using the number keys
 		case '1':
+			arrowPosX = 0;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '2':
+			arrowPosX = 1;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '3':
+			arrowPosX = 2;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '4':
+			arrowPosX = 3;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '5':
+			arrowPosX = 4;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '6':
+			arrowPosX = 5;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
 		case '7':
+			arrowPosX = 6;
 			std::cout << "You selected:" << move << std::endl << std::endl;
 			placeToken(move);
 			break;
@@ -268,7 +284,7 @@ void gaming() {
 
 			break;
 		default:
-			std::cout << "Please use one of the specified inputs" << std::endl << std::endl;
+			std::cout << "Please use one of the specified inputs to navigate the board." << std::endl << std::endl;
 			break;
 		}
 		std::cout << arrowPosY << "\t" << arrowPosX << std::endl;
@@ -277,19 +293,46 @@ void gaming() {
 
 // Will move the token to the bottom of a column
 void placeToken(char a) {
-
+	std::cout << a << std::endl;
+	switch (a){
 	// ENTER or SPACE input
-	if (a == 13 || a == 32) {
-		board.at(arrowPosY + 1).at(arrowPosX) = 'X';
-	
-	
+	case 13: case 32:
+		// Loop will run through inner vector from bottom to top
+		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
+			// If a spot in vector is '.' it will place a token and break out of the loop
+			if (board.at(arrowPosY).at(arrowPosX) == '.') {
+				board.at(arrowPosY).at(arrowPosX) = 'X';
+				break;
+			}
+		}
+		break;
+	// Number input
+	case '1': case '2': case '3': case '4': case '5': case '6': case '7':
+		// Loop will run through inner vector from bottom to top
+		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
+			// If a spot in vector is '.' it will place a token and break out of the loop
+			if (board.at(arrowPosY).at(arrowPosX) == '.') {
+				board.at(arrowPosY).at(arrowPosX) = 'X';
+				break;
+			}
+		}
+		break;
+	default:
+		std::cout << "Something is wrong...\n" << std::endl;
+		break;
 	}
-
-
+	arrowPosY = 0;
 }
 
 // $$$$$
 void winConditions() {
+	for (int y = 0; y < board.size(); y++) {
+		for (int x = 0; x < board.at(y).size(); x++) {
+
+
+
+		}
+	}
 }
 
 // Reset the playing field
