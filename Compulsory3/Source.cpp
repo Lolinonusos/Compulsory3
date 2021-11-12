@@ -52,9 +52,14 @@ void quit(); // Terminate program
 
 // Functions for the game
 void gaming(); // Play the game
+int turn = 1; // P1 = 1	  P2 = 2
+bool forfeit = false;
 void drawBoard(); // draw the board
 void placeToken(char); // Place player token correctly
-void winConditions(); // Check for lines of 4
+void winConditions(); // Check for lines of 4, and change bools to true
+bool win = false;
+bool p1Win = false;
+bool p2Win = false;
 void resetBoard(); // Empty the board of tokens
 
 // Universal stuff
@@ -158,6 +163,7 @@ void whoIsGaming() {
 	std::cout << "Player 2: ";
 	std::cin >> p2Name;
 
+	
 	stats.close();
 }
 
@@ -216,8 +222,9 @@ void drawBoard() {
 // Main function used for playing the game
 void gaming() {
 	char move{};
+	turn = 1; // P1 always starts
 	system("cls");
-	while (true) {
+	while (win != true) {
 		
 		std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
 		std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
@@ -289,9 +296,10 @@ void gaming() {
 			std::cout << "Please use one of the specified inputs to navigate the board." << std::endl << std::endl;
 			break;
 		}
-		std::cout << arrowPosY << "\t" << arrowPosX << std::endl;
+		std::cout << arrowPosY << "\t" << arrowPosX << std::endl; // Fjærn når du er ferdig
+		}
 	}
-}
+
 
 // Will move the token to the bottom of a column
 void placeToken(char a) {
@@ -303,7 +311,12 @@ void placeToken(char a) {
 		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
 			// If a spot in vector is '.' it will place a token and break out of the loop
 			if (board.at(arrowPosY).at(arrowPosX) == '.') {
-				board.at(arrowPosY).at(arrowPosX) = 'X';
+				if (turn == 1) {
+					board.at(arrowPosY).at(arrowPosX) = 'X';
+				}
+				else if (turn == 2) {
+					board.at(arrowPosY).at(arrowPosX) = 'O';
+				}
 				break;
 			}
 		}
@@ -314,7 +327,12 @@ void placeToken(char a) {
 		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
 			// If a spot in vector is '.' it will place a token and break out of the loop
 			if (board.at(arrowPosY).at(arrowPosX) == '.') {
-				board.at(arrowPosY).at(arrowPosX) = 'X';
+				if (turn == 1) {
+					board.at(arrowPosY).at(arrowPosX) = 'X';
+				}
+				else if (turn == 2) {
+					board.at(arrowPosY).at(arrowPosX) = 'O';
+				}
 				break;
 			}
 		}
@@ -323,14 +341,20 @@ void placeToken(char a) {
 		std::cout << "Something is wrong...\n" << std::endl;
 		break;
 	}
-	winConditions(); // run before resetting arrowPosY so I can check that spesific position.
+	winConditions(); 
+	// Change which players turn it is
+	if (turn == 1) {
+		turn = 2;
+	}
+	else if (turn == 2) {
+		turn = 1;
+	}
 	arrowPosY = 0;
 }
 
 // $$$$$
 void winConditions() {
-	int count = 0;
-
+	
 	// Check vertically (up and down)
 		for (int y = 0; y < board.size() - 3; y++) { // Checks the outer vector, 
 			for (int x = 0; x < board.at(y).size(); x++) { // Checks the vector at position i
@@ -342,28 +366,42 @@ void winConditions() {
 				}
 			}
 		}
-	
-		//}
-	
 	// Check horizontal (left to right)
-	
+		for (int y = 1; y < board.size(); y++) {
+			for (int x = 0; x < board.at(y).size() - 3; x++) {
+				if (board[y][x] != '.') { // Endre til X eller O for spiller spesifik seier
+					if (board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
+						std::cout << "Horizontal win" << std::endl;
+						break;
+					}
+				}
+			}
+		}
 
-	// Check up right
+	// Check diagonal leaning right (
+		for (int y = 1; y < board.size() - 3; y++) {
+			for (int x = 0; x < board.at(y).size() - 3; x++) {
+				if (board[y][x] != '.') {
+					if (board[y][x] == board[y+1][x + 1] && board[y +1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
+						std::cout << "Diagonal leaning left win" << std::endl;
+						break;
+					}
+				}
+			}
+		}
 
-	/*	int y = arrowPosY;
-		int x = arrowPosX;*/
-			/*if (board[y][x]) {
+	// Check diagonal leaning left
+		for (int y = 1; y < board.size() - 3; y++) {
+			for (int x = 6; x > board.at(y).size() -3; x--) { // Run in reverse to avoid 
+				if (board[y][x] != '.') {
+					if (board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
+						std::cout << "Diagonal leaning right win" << std::endl;
 
-			}*/
-			
-
-	// Check up left
-		
-		/*int y = arrowPosY;
-		int x = arrowPosX;*/
-	//std::cout << y << "\t" << x << std::endl << std::endl;
-	
-	
+						break;
+					}
+				}
+			}
+		}
 }
 
 // Reset the playing field
