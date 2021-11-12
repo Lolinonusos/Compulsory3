@@ -216,13 +216,14 @@ void drawBoard() {
 // Main function used for playing the game
 void gaming() {
 	char move{};
-	system("csl");
+	system("cls");
 	while (true) {
 		
 		std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
 		std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
 		std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
 		drawBoard();
+		winConditions();
 		move = _getch();
 		move = tolower(move);
 		switch (move) {
@@ -322,35 +323,47 @@ void placeToken(char a) {
 		std::cout << "Something is wrong...\n" << std::endl;
 		break;
 	}
-	winConditions();
+	winConditions(); // run before resetting arrowPosY so I can check that spesific position.
 	arrowPosY = 0;
 }
 
 // $$$$$
 void winConditions() {
-	for (int y = 1; y < board.size(); y++) {
-		for (int x = 0; x < board.at(y).size(); x++) {
-			if (board[y < 4][x] == 'X' || board[y < 4][x] == 'O') {
-				// Check vertically (up and down)
-				if (board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
-					std::cout << "Vertical win" << std::endl;
-					break;
-				}
-				// Check horizontal (left and right)
-				if (board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
+	int count = 0;
 
+	// Check vertically (up and down)
+		for (int y = 0; y < board.size() - 3; y++) { // Checks the outer vector, 
+			for (int x = 0; x < board.at(y).size(); x++) { // Checks the vector at position i
+				if (board[y][x] != '.') {
+					if (board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
+						std::cout << "Vertical win" << std::endl;
+						break;
+					}
 				}
-
 			}
-			// Check down right
+		}
+	
+		//}
+	
+	// Check horizontal (left to right)
+	
+
+	// Check up right
+
+	/*	int y = arrowPosY;
+		int x = arrowPosX;*/
 			/*if (board[y][x]) {
 
 			}*/
 			
 
-			// Check down left
-		}
-	}
+	// Check up left
+		
+		/*int y = arrowPosY;
+		int x = arrowPosX;*/
+	//std::cout << y << "\t" << x << std::endl << std::endl;
+	
+	
 }
 
 // Reset the playing field
