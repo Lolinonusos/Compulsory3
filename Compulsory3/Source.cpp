@@ -238,228 +238,262 @@ void drawBoard() {
 // Main function used for playing the game
 void gaming() {
 	char move{};
+	char yn = 'y';
 	turn = 1; // P1 always starts
-	system("cls");
-	while (win != true) {
-		system("cls");
+	while (yn == 'y')
+	{
+		win = false;
+		forfeit = false;
 
-		// Spelling out whose turn it is
-		switch (turn) {
-		case 1:
-			std::cout << " It is " << std::endl;
-			break;
-		}
+		while (win != true || forfeit != true) {
+			system("cls");
 
-		// We will fund out how to give RNGesus life on a later time...
-		//if (Player.name == "AI" || Player.name == "Ai" || Player.name == "ai" || Player.name == "RNGesus") {
-		//	RNGesus();
-		//}
-
-
-		std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
-		std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
-		std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
-		drawBoard();
-		winConditions();
-		move = _getch();
-		move = tolower(move);
-		switch (move) {
-		// First two cases 'a' and 'd' allows user to move pointer left and right, respectively, over different columns
-		case 'a':
-			arrowPosX--;
-			if (arrowPosX < 0) {
-				arrowPosX = (board.size() - 1);
+			// Spelling out whose turn it is
+			switch (turn) {
+			case 1:
+				std::cout << " It is " << std::endl;
+				break;
 			}
-			break;
-		case 'd':
-			arrowPosX++;
-			if (arrowPosX > (board.size() - 1)) {
+
+			// We will fund out how to give RNGesus life on a later time...
+			//if (Player.name == "AI" || Player.name == "Ai" || Player.name == "ai" || Player.name == "RNGesus") {
+			//	RNGesus();
+			//}
+
+
+			std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
+			std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
+			std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
+			drawBoard();
+			winConditions();
+			move = _getch();
+			move = tolower(move);
+			switch (move) {
+			// First two cases 'a' and 'd' allows user to move pointer left and right, respectively, over different columns
+			case 'a':
+				arrowPosX--;
+				if (arrowPosX < 0) {
+					arrowPosX = (board.size() - 1);
+				}
+				break;
+			case 'd':
+				arrowPosX++;
+				if (arrowPosX > (board.size() - 1)) {
+					arrowPosX = 0;
+				}
+				break;
+			// Pressing ENTER will place a token in the column that the player has highlighted
+			case 13: case 32:
+				std::cout << "You pressed ENTER";
+				placeToken(move);	
+				break;
+			// The numbered cases allow user to select a column using the number keys
+			case '1':
 				arrowPosX = 0;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '2':
+				arrowPosX = 1;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '3':
+				arrowPosX = 2;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '4':
+				arrowPosX = 3;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '5':
+				arrowPosX = 4;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '6':
+				arrowPosX = 5;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			case '7':
+				arrowPosX = 6;
+				std::cout << "You selected:" << move << std::endl << std::endl;
+				placeToken(move);
+				break;
+			// Pressing ESC will forfeit the game
+			case 27:
+				forfeit = true;
+				break;
+			default:
+				std::cout << "Please use one of the specified inputs to navigate the board." << std::endl << std::endl;
+				break;
 			}
-			break;
-		// Pressing ENTER will place a token in the column that the player has highlighted
-		case 13: case 32:
-			std::cout << "You pressed ENTER";
-			placeToken(move);
-			break;
-		// The numbered cases allow user to select a column using the number keys
-		case '1':
-			arrowPosX = 0;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '2':
-			arrowPosX = 1;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '3':
-			arrowPosX = 2;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '4':
-			arrowPosX = 3;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '5':
-			arrowPosX = 4;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '6':
-			arrowPosX = 5;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		case '7':
-			arrowPosX = 6;
-			std::cout << "You selected:" << move << std::endl << std::endl;
-			placeToken(move);
-			break;
-		// Forfeit the game
-		case 27:
-
-			break;
-		default:
-			std::cout << "Please use one of the specified inputs to navigate the board." << std::endl << std::endl;
-			break;
+			std::cout << arrowPosY << "\t" << arrowPosX << std::endl; // Fjærn når du er ferdig
 		}
-		std::cout << arrowPosY << "\t" << arrowPosX << std::endl; // Fjærn når du er ferdig
+		if (forfeit == true) {
+			std::cout << "Player forfeited the game.\n" << std::endl;
+		}
+
+		std::cout << "Do you want to play another game?";
+		std::cin >> yn;
+		if (yn == 'y') {
+			resetBoard();
+		}
 	}
 }
 
 
 // Will move the token to the bottom of a column
 void placeToken(char a) {
-	std::cout << a << std::endl;
-	switch (a){
-	// ENTER or SPACE input
-	case 13: case 32:
-		// Loop will run through inner vector from bottom to top
-		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
-			// If a spot in vector is '.' it will place a token and break out of the loop
-			if (board.at(arrowPosY).at(arrowPosX) == '.') {
-				if (turn == 1) {
-					board.at(arrowPosY).at(arrowPosX) = 'X';
+	// User cannot select a column that has been completely filled
+	if (board[1][arrowPosX] == '.') {
+		switch (a){
+		// ENTER or SPACE input
+		case 13: case 32:
+			// Loop will run through inner vector from bottom to top
+			for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
+				// If a spot in vector is '.' it will place a token and break out of the loop
+				if (board.at(arrowPosY).at(arrowPosX) == '.') {
+					if (turn == 1) {
+						board.at(arrowPosY).at(arrowPosX) = 'X';
+					}
+					else if (turn == 2) {
+						board.at(arrowPosY).at(arrowPosX) = 'O';
+					}
+					break;
 				}
-				else if (turn == 2) {
-					board.at(arrowPosY).at(arrowPosX) = 'O';
-				}
-				break;
 			}
-		}
-		break;
-	// Number input
-	case '1': case '2': case '3': case '4': case '5': case '6': case '7':
-		// Loop will run through inner vector from bottom to top
-		for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
-			// If a spot in vector is '.' it will place a token and break out of the loop
-			if (board.at(arrowPosY).at(arrowPosX) == '.') {
-				if (turn == 1) {
-					board.at(arrowPosY).at(arrowPosX) = 'X';
+			break;
+		// Number input
+		case '1': case '2': case '3': case '4': case '5': case '6': case '7':
+			// Loop will run through inner vector from bottom to top
+			for (arrowPosY = 6; arrowPosY >= 0; arrowPosY--) {
+				// If a spot in vector is '.' it will place a token and break out of the loop
+				if (board.at(arrowPosY).at(arrowPosX) == '.') {
+					if (turn == 1) {
+						board.at(arrowPosY).at(arrowPosX) = 'X';
+					}
+					else if (turn == 2) {
+						board.at(arrowPosY).at(arrowPosX) = 'O';
+					}
+					break;
 				}
-				else if (turn == 2) {
-					board.at(arrowPosY).at(arrowPosX) = 'O';
-				}
-				break;
 			}
+			break;
+		default:
+			std::cout << "Something is wrong...\n" << std::endl;
+			break;
 		}
-		break;
-	default:
-		std::cout << "Something is wrong...\n" << std::endl;
-		break;
+		winConditions(); 
+		// Changes which players turn it is only when placing token is successful
+		if (turn == 1) {
+			turn = 2;
+		}
+		else if (turn == 2) {
+			turn = 1;
+		}
+		arrowPosY = 0;
 	}
-	winConditions(); 
-	// Change which players turn it is
-	if (turn == 1) {
-		turn = 2;
+
+	else {
+		std::cout << "That column is full, select another." << std::endl;
 	}
-	else if (turn == 2) {
-		turn = 1;
-	}
-	arrowPosY = 0;
 }
 
 // $$$$$
 void winConditions() {
-	
 	// Check vertically (up and down)
-		for (int y = 0; y < board.size() - 3; y++) { // Checks the outer vector, 
-			for (int x = 0; x < board.at(y).size(); x++) { // Checks the vector at position i
-				if (board[y][x] != '.') {
-					if (board[y][x] == 'X' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
-						std::cout << "P1 Vertical win" << std::endl;
-						win = true;
-						break;
-					}
-					if (board[y][x] == 'O' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
-						std::cout << "P2 Vertical win" << std::endl;
-						win = true;
-						break;
-					}
+	for (int y = 0; y < board.size() - 3; y++) { // Checks the outer vector, 
+		for (int x = 0; x < board.at(y).size(); x++) { // Checks the vector at position i
+			if (board[y][x] != '.') {
+				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
+					std::cout << "P1 Vertical win" << std::endl;
+					win = true;
+					break;
+				}
+				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
+					std::cout << "P2 Vertical win" << std::endl;
+					win = true;
+					break;
 				}
 			}
 		}
+	}
+	
 	// Check horizontal (left to right)
-		for (int y = 1; y < board.size(); y++) {
-			for (int x = 0; x < board.at(y).size() - 3; x++) {
-				if (board[y][x] != '.') { // Endre til X eller O for spiller spesifik seier
-					if (board[y][x] == 'X' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
-						std::cout << "P1 Horizontal win" << std::endl;
-						win = true;
-						break;
-					}
-					if (board[y][x] == 'O' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
-						std::cout << "P2 Vertical win" << std::endl;
-						win = true;
-						break;
-					}
+	for (int y = 1; y < board.size(); y++) {
+		for (int x = 0; x < board.at(y).size() - 3; x++) {
+			if (board[y][x] != '.') { // Endre til X eller O for spiller spesifik seier
+				if (board[y][x] == 'X' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
+					std::cout << "P1 Horizontal win" << std::endl;
+					win = true;
+					break;
+				}
+				if (board[y][x] == 'O' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
+					std::cout << "P2 Vertical win" << std::endl;
+					win = true;
+					break;
 				}
 			}
 		}
+	}
 
 	// Check diagonal leaning right (
-		for (int y = 1; y < board.size() - 3; y++) {
-			for (int x = 0; x < board.at(y).size() - 3; x++) {
-				if (board[y][x] != '.') {
-					if (board[y][x] == 'X' && board[y][x] == board[y+1][x + 1] && board[y +1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
-						std::cout << "P1 Diagonal leaning left win" << std::endl;
-						win = true;
-						break;
-					}
-					if (board[y][x] == 'O' && board[y][x] == board[y + 1][x + 1] && board[y + 1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
-						std::cout << "P2 Vertical win" << std::endl;
-						win = true;
-						break;
-					}
+	for (int y = 1; y < board.size() - 3; y++) {
+		for (int x = 0; x < board.at(y).size() - 3; x++) {
+			if (board[y][x] != '.') {
+				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x + 1] && board[y +1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
+					std::cout << "P1 Diagonal leaning left win" << std::endl;
+					win = true;
+					break;
+				}
+				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x + 1] && board[y + 1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
+					std::cout << "P2 Diagonal leaning left win" << std::endl;
+					win = true;
+					break;
 				}
 			}
 		}
+	}
 
 	// Check diagonal leaning left
-		for (int y = 1; y < board.size() - 3; y++) {
-			for (int x = 6; x > board.at(y).size() -3; x--) { // Run in reverse to avoid error
-				if (board[y][x] != '.') {
-					if (board[y][x] == 'X' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
-						std::cout << "P1 Diagonal leaning right win" << std::endl;
-						win = true;
-						break;
-					}
-					if (board[y][x] == 'O' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
-						std::cout << "P2 Vertical win" << std::endl;
-						win = true;
-						break;
-					}
+	for (int y = 1; y < board.size() - 3; y++) {
+		for (int x = 6; x > board.at(y).size() -3; x--) { // Run in reverse to avoid error
+			if (board[y][x] != '.') {
+				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
+					std::cout << "P1 Diagonal leaning right win" << std::endl;
+					win = true;
+					break;
+				}
+				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
+					std::cout << "P2 Diagonal leaning right win" << std::endl;
+					win = true;
+					break;
 				}
 			}
 		}
+	}
 }
 
 // Reset the playing field
 void resetBoard() {
+	// Using th equick fix method for now
+	char resetter[7][7] = { { ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+							{'.', '.', '.', '.', '.', '.', '.'},
+							{'.', '.', '.', '.', '.', '.', '.'},
+							{'.', '.', '.', '.', '.', '.', '.'},
+							{'.', '.', '.', '.', '.', '.', '.'},
+							{'.', '.', '.', '.', '.', '.', '.'},
+							{'.', '.', '.', '.', '.', '.', '.'}, };
 
+	for (int y = 0; y < 7; y++) {
+		for (int x = 0; x < 7; x++) {
+			board[y][x] = resetter[y][x];
+		}
+	}
 }
 
 // Clear cin buffer
