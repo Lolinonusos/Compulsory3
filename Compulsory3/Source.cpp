@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <Windows.h>
 
 // Making connect 4 shiddass
 
@@ -142,8 +143,8 @@ int main() {
 				break;
 			}
 			break;
-		// Press ESC to close
-		case 27:
+		// Press 'q' to close
+		case 'q':
 			exit(0);
 			break;
 		default:
@@ -204,6 +205,8 @@ void rules() {
 	std::cout << "Connect-four is a 2 player game; you will either play against a human or an AI" << std::endl;
 	std::cout << "(The AI is probably more A than I)" << std::endl;
 	std::cout << "You and your oppoent will drop tokens to the bottom of the board and try to get a line of four." << std::endl;
+	char next{};
+	next = _getch();
 }
 
 void viewStats() {
@@ -323,8 +326,8 @@ void gaming() {
 				std::cout << "You selected:" << move << std::endl << std::endl;
 				placeToken(move);
 				break;
-			// Pressing ESC will forfeit the game
-			case 27:
+			// Pressing 'q' will forfeit the game
+			case 'q':
 				forfeit = true;
 				break;
 			default:
@@ -338,6 +341,7 @@ void gaming() {
 		}
 
 		std::cout << "Do you want to play another game?";
+		Sleep(1000);
 		std::cin >> yn;
 		if (yn == 'y') {
 			resetBoard();
@@ -433,7 +437,7 @@ void winConditions() {
 					break;
 				}
 				if (board[y][x] == 'O' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
-					std::cout << "P2 Vertical win" << std::endl;
+					std::cout << "P2 Horizontal win" << std::endl;
 					win = true;
 					break;
 				}
@@ -441,9 +445,9 @@ void winConditions() {
 		}
 	}
 
-	// Check diagonal leaning right (
-	for (int y = 1; y < board.size() - 3; y++) {
-		for (int x = 0; x < board.at(y).size() - 3; x++) {
+	// Check diagonal leaning left (
+	for (int y = 1; y < board.size()-3; y++) {
+		for (int x = 0; x < board.at(y).size()-3; x++) {
 			if (board[y][x] != '.') {
 				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x + 1] && board[y +1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
 					std::cout << "P1 Diagonal leaning left win" << std::endl;
@@ -459,16 +463,17 @@ void winConditions() {
 		}
 	}
 
-	// Check diagonal leaning left
-	for (int y = 1; y < board.size() - 3; y++) {
-		for (int x = 6; x > board.at(y).size() -3; x--) { // Run in reverse to avoid error
+	// Check diagonal leaning right
+	for (int y = 1; y < board.size(); y++) {
+		for (int x = 0; x < board.at(y).size() - 3; x++) { // Run in reverse to avoid error
 			if (board[y][x] != '.') {
-				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
+				//(board[y + 3][x] == 'X' && board[y + 3][x] == board[y + 2][x + 1] && board[y + 2][x + 1] == board[y + 1][x + 2] && board[y + 1][x + 2] == board[y][x + 3])
+				if (board[y][x] == 'X' && board[y][x] == board[y - 1][x + 1] && board[y - 1][x + 1] == board[y - 2][x + 2] && board[y - 2][x + 2] == board[y - 3][x + 3]) {
 					std::cout << "P1 Diagonal leaning right win" << std::endl;
 					win = true;
 					break;
 				}
-				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x - 1] && board[y + 1][x - 1] == board[y + 2][x - 2] && board[y + 2][x - 2] == board[y + 3][x - 3]) {
+				if (board[y][x] == 'O' && board[y][x] == board[y - 1][x + 1] && board[y - 1][x + 1] == board[y - 2][x + 2] && board[y - 2][x + 2] == board[y - 3][x + 3]) {
 					std::cout << "P2 Diagonal leaning right win" << std::endl;
 					win = true;
 					break;
