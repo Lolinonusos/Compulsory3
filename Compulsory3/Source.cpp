@@ -386,7 +386,9 @@ void gaming() {
 
 // AI
 char RNGesus() {
-	char a;
+	char a = '1';
+
+	
 
 	return a;
 }
