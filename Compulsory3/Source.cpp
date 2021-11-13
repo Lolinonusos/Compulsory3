@@ -384,6 +384,12 @@ void gaming() {
 	}
 }
 
+// AI
+char RNGesus() {
+	char a;
+
+	return a;
+}
 
 // Will move the token to the bottom of a column
 void placeToken(char a) {
