@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <Windows.h>
 
 // Making connect 4 shiddass
 
@@ -15,12 +14,19 @@ public:
 	int draws{};
 	int forfeits{};
 
+	//void printName() {
+	//	std::cout << name;
+	//}
+
 private:
 
 };
 
 
 std::vector <Player> players;
+
+std::string p1Name{};
+std::string p2Name{};
 
 // For the game
 std::vector<std::vector<char>> board;
@@ -65,7 +71,7 @@ bool p2Win = false;
 void resetBoard(); // Empty the board of tokens
 
 // AI
-void RNGesus();
+char RNGesus();
 
 // Universal stuff
 void clearCin();
@@ -89,7 +95,7 @@ int main() {
 	arrowPosY = 0;
 
 	while (true) {
-		system("cls");
+	system("cls");
 
 		int menuChoice{};
 
@@ -102,7 +108,6 @@ int main() {
 		std::cout << " \\____|  \\___/  |_| |_| |_| |_|  \\___|  \\___|  \\__|        |_|    \\___/   \\__,_| |_|" << std::endl << std::endl << std::endl;
 
 		std::cout << "Use 'w' and 's' to move up or down, press SPACE or ENTER to confirm highlighted option, or you can use the numbers listed." << std::endl;
-		std::cout << arrowPosX << "\t" << arrowPosY << std::endl;
 		drawMenu();
 		menuChoice = _getch();
 		switch (menuChoice) {
@@ -151,6 +156,9 @@ int main() {
 			std::cout << "Please use one of the specified inputs to navigate the menu." << std::endl;
 			break;
 		}
+		if (arrowPosX > 0) {
+			arrowPosX = 0;
+		}
 	}
 	return 0;
 }
@@ -171,16 +179,29 @@ void whoIsGaming() {
 	
 void createPlayerName() {
 
-	std::string p1Name{};
-	std::string p2Name{};
+	Player temp_player;
+	do {
 
+		std::cout << "Who is gaming today?\n" << std::endl;
+		if (players.size() == 0) {
+			std::cout << "Player 1: ";
+		}
+		else if (players.size() == 1) {
+			std::cout << "Player 2: ";
+		}
+		else {
+			std::cout << "New name: ";
+		}
+	std::cin >> temp_player.name;
+	temp_player.wins = 0;
+	temp_player.draws = 0;
+	temp_player.forfeits = 0;
 
-	std::cout << "Who is gaming today?\n" << std::endl;
-	std::cout << "Player 1: ";
-	std::cin >> p1Name;
+	players.push_back(temp_player);
+
 	std::cout << std::endl;
-	std::cout << "Player 2: ";
-	std::cin >> p2Name;
+	} while (players.size() <= 1);
+
 	stats.close();
 }
 
@@ -209,8 +230,17 @@ void rules() {
 	next = _getch();
 }
 
+// Vies stats and names of players
 void viewStats() {
+	
+	std::cout << "Name:\t" << "Victories:\t" << "Draws:\t" << "Forfeits:\t" << std::endl << std::endl;
+	for (int i = 0; i < players.size(); i++) {
+		std::cout << players.at(i).name << "\t" << players.at(i).wins << "\t" << players.at(i).draws << "\t" << players.at(i).forfeits << std::endl;
+	}
 
+	std::cout << std::endl << "Press anything to return to menu." << std::endl;
+	char next{};
+	next = _getch();
 	stats.close();
 }
 
@@ -248,7 +278,7 @@ void gaming() {
 		win = false;
 		forfeit = false;
 
-		while (win != true || forfeit != true) {
+		while (win != true) {
 			system("cls");
 
 			// Spelling out whose turn it is
@@ -263,7 +293,7 @@ void gaming() {
 			//	RNGesus();
 			//}
 
-
+			// if (human player)
 			std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
 			std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
 			std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
@@ -272,6 +302,10 @@ void gaming() {
 			move = _getch();
 			move = tolower(move);
 			switch (move) {
+
+			// else (ai)
+			// move = value returned by AI
+
 			// First two cases 'a' and 'd' allows user to move pointer left and right, respectively, over different columns
 			case 'a':
 				arrowPosX--;
@@ -328,6 +362,7 @@ void gaming() {
 				break;
 			// Pressing 'q' will forfeit the game
 			case 'q':
+				win = true;
 				forfeit = true;
 				break;
 			default:
@@ -340,8 +375,8 @@ void gaming() {
 			std::cout << "Player forfeited the game.\n" << std::endl;
 		}
 
-		std::cout << "Do you want to play another game?";
-		Sleep(1000);
+		std::cout << "Do you want to play another game?\nPress 'y' to start a new game" << std::endl;
+		
 		std::cin >> yn;
 		if (yn == 'y') {
 			resetBoard();
@@ -430,7 +465,7 @@ void winConditions() {
 	// Check horizontal (left to right)
 	for (int y = 1; y < board.size(); y++) {
 		for (int x = 0; x < board.at(y).size() - 3; x++) {
-			if (board[y][x] != '.') { // Endre til X eller O for spiller spesifik seier
+			if (board[y][x] != '.') { 
 				if (board[y][x] == 'X' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
 					std::cout << "P1 Horizontal win" << std::endl;
 					win = true;
@@ -465,9 +500,8 @@ void winConditions() {
 
 	// Check diagonal leaning right
 	for (int y = 1; y < board.size(); y++) {
-		for (int x = 0; x < board.at(y).size() - 3; x++) { // Run in reverse to avoid error
+		for (int x = 0; x < board.at(y).size() - 3; x++) { 
 			if (board[y][x] != '.') {
-				//(board[y + 3][x] == 'X' && board[y + 3][x] == board[y + 2][x + 1] && board[y + 2][x + 1] == board[y + 1][x + 2] && board[y + 1][x + 2] == board[y][x + 3])
 				if (board[y][x] == 'X' && board[y][x] == board[y - 1][x + 1] && board[y - 1][x + 1] == board[y - 2][x + 2] && board[y - 2][x + 2] == board[y - 3][x + 3]) {
 					std::cout << "P1 Diagonal leaning right win" << std::endl;
 					win = true;
@@ -485,8 +519,8 @@ void winConditions() {
 
 // Reset the playing field
 void resetBoard() {
-	// Using th equick fix method for now
-	char resetter[7][7] = { { ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+	// Using the quick fix method for now
+	char resetter[7][7] = { {' ', ' ', ' ', ' ', ' ', ' ', ' '},
 							{'.', '.', '.', '.', '.', '.', '.'},
 							{'.', '.', '.', '.', '.', '.', '.'},
 							{'.', '.', '.', '.', '.', '.', '.'},
@@ -494,6 +528,7 @@ void resetBoard() {
 							{'.', '.', '.', '.', '.', '.', '.'},
 							{'.', '.', '.', '.', '.', '.', '.'}, };
 
+	// Just sets the elements in the vector to be the same as in this array
 	for (int y = 0; y < 7; y++) {
 		for (int x = 0; x < 7; x++) {
 			board[y][x] = resetter[y][x];
