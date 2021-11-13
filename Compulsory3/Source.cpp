@@ -52,8 +52,12 @@ std::string menu[4][2] = { { " ", " 1. Play"},
 							{" ", " 4. Quit"} };
 
 // This collection is displayed on the menu in some form
-void whoIsGaming(); // Insert name of players, we will try to save them and their scores. Will go to gaming when finished
-void createPlayerName();
+void whoIsGaming(); // Who TF be gamin tho, go to select which names will be used or if you are gonna create new names. Will go to gaming when finished
+void createPlayerName(); // Enter a new name, will also create a new Player object
+void selectExistingGamer(); // Select the names
+void listOfExistingNames(); // Create the list of names
+int selectedNameP1{}; // selected name will also let me save stats to the name selected
+int selectedNameP2{};
 void rules(); // Display the rules
 void viewStats(); // Display stats
 void quit(); // Terminate program 
@@ -165,15 +169,44 @@ int main() {
 
 void whoIsGaming() {
 	if (players.size() != 0) {
-		char yn{};
-		std::cout << "Do you want to create new names?";
-		yn = _getch();
-		if (yn == 'y') {
-			createPlayerName();
-		}
+		char yn = '0';
+		do {
+			std::cout << "1. Select from existing names" << std::endl;
+			std::cout << "2. Create new names" << std::endl;
+			yn = _getch();
+			switch (yn) {
+			case '1':
+				selectExistingGamer();
+				break;
+			case '2':
+				createPlayerName();
+				break;
+			default:
+				break;
+			}
+		} while (yn != '1');
+
 	}
-	else {
+	else if (players.size() == 0) {
 		createPlayerName();
+	}
+}
+
+void selectExistingGamer() {
+	std::cout << "Input the number of which name you want:\n" << std::endl;
+	listOfExistingNames();
+	std::cout << "\n" << std::endl;
+	std::cout << "Player One, select your name: " << std::endl;
+	std::cin >> selectedNameP1;
+	std::cout << "Player One is " << players.at(selectedNameP1).name << std::endl << std::endl;
+	std::cout << "PLayer Two, select your name: " << std::endl;
+	std::cin >> selectedNameP2;
+	std::cout << "Player Two is " << players.at(selectedNameP2).name << std::endl << std::endl;
+}
+
+void listOfExistingNames() {
+	for (size_t i = 0; i < players.size(); i++) {
+		std::cout << i << ". " << players.at(i).name << std::endl;
 	}
 }
 	
@@ -181,7 +214,6 @@ void createPlayerName() {
 
 	Player temp_player;
 	do {
-
 		std::cout << "Who is gaming today?\n" << std::endl;
 		if (players.size() == 0) {
 			std::cout << "Player 1: ";
@@ -284,10 +316,15 @@ void gaming() {
 			// Spelling out whose turn it is
 			switch (turn) {
 			case 1:
-				std::cout << " It is " << std::endl;
+				std::cout << "It is " << players.at(selectedNameP1).name << "'s turn.\n";
+				std::cout << "You place X\n" << std::endl;
+				break;
+			case 2:
+				std::cout << "It is " << players.at(selectedNameP1).name << "'s turn.\n" << std::endl;
+				std::cout << "You place O\n" << std::endl;
 				break;
 			}
-
+		
 			// We will fund out how to give RNGesus life on a later time...
 			//if (Player.name == "AI" || Player.name == "Ai" || Player.name == "ai" || Player.name == "RNGesus") {
 			//	RNGesus();
@@ -303,7 +340,7 @@ void gaming() {
 			move = tolower(move);
 			switch (move) {
 
-			// else (ai)
+			// else if (ai)
 			// move = value returned by AI
 
 			// First two cases 'a' and 'd' allows user to move pointer left and right, respectively, over different columns
@@ -373,6 +410,7 @@ void gaming() {
 		}
 		if (forfeit == true) {
 			std::cout << "Player forfeited the game.\n" << std::endl;
+			players.at(selectedNameP1).forfeits + 1;
 		}
 
 		std::cout << "Do you want to play another game?\nPress 'y' to start a new game" << std::endl;
