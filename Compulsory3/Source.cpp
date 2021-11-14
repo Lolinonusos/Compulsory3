@@ -193,7 +193,7 @@ void viewStats() {
 	std::streampos begin, end;
 	std::fstream stats("../Names_And_Stats.txt", std::ios::in | std::ios::app | std::ios::out); // Se etter en bedre måte
 	system("clear");
-	stats << "Name:\t" << "Victories:\t" << "Draws:\t" << "Forfeits:\t" << std::endl << std::endl;
+	stats << "Name:\t" << "Wins:\t" << "Draws:\t" << "Forfeits:\t" << std::endl << std::endl;
 	for (int i = 0; i < players.size(); i++) {
 		stats << players.at(i).name << "\t" << players.at(i).wins << "\t" << players.at(i).draws << "\t" << players.at(i).forfeits;
 		stats << std::endl << std::endl;
@@ -212,8 +212,6 @@ void viewStats() {
 	char next{};
 	next = _getch();
 }
-
-
 
 // Draw the playing field
 void drawBoard() {
@@ -368,6 +366,7 @@ char RNGesus() {
 	int a{};
 	char b{};
 
+	// Curently just places tokens randomly
 	std::srand(time(0));
 	a = rand() % 7 + 1;
 
@@ -396,7 +395,7 @@ char RNGesus() {
 	default:
 		break;
 	}
-	return b;
+	return b; // Need to return char because int in gaming needs char?
 }
 
 // Will move the token to the bottom of a column
@@ -560,7 +559,7 @@ void winConditions() {
 			if (board[1][x] != '.') {
 				drawCount += 1;
 			}
-			if (drawCount == 7) {
+			if (drawCount == board.at(1).size()) {
 				players.at(selectedNameP1).draws += 1;
 				players.at(selectedNameP2).draws += 1;
 				draw = true;

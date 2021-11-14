@@ -24,3 +24,15 @@ Name:	Victories:	Draws:	Forfeits:
 
 Gunga	0	0	0
 Ginga	1	0	0
+Name:	Victories:	Draws:	Forfeits:	
+
+iwio	2	1	0
+
+wvnowv	1	1	0
+
+Name:	Victories:	Draws:	Forfeits:	
+
+iwio	2	1	0
+
+wvnowv	1	1	0
+
