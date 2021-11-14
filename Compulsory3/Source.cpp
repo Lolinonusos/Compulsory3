@@ -23,7 +23,6 @@ private:
 
 };
 
-
 std::vector <Player> players;
 
 std::string p1Name{};
@@ -67,11 +66,11 @@ void quit(); // Terminate program
 void gaming(); // Play the game
 int turn = 1; // P1 = 1	  P2 = 2
 bool forfeit = false;
+bool draw = false; // Is true when board is filled and win still is false
 void drawBoard(); // draw the board
 void placeToken(char); // Place player token correctly
 void winConditions(); // Check for lines of 4, and change bools to true
 bool win = false;
-bool draw = false;
 void resetBoard(); // Empty the board of tokens
 
 // AI
@@ -86,6 +85,7 @@ void referenceExample(int& OUTint, char& OUTchar);
 // Main wil take the role as a menu
 int main() {
 	stats.close();
+
 	// This is how you make a 2D vector
 	board.push_back(std::vector<char>(7, ' '));
 	board.push_back(std::vector<char>(7, '.'));
@@ -217,9 +217,11 @@ void createPlayerName() {
 		std::cout << "Who is gaming today?\n" << std::endl;
 		if (players.size() == 0) {
 			std::cout << "Player 1: ";
+			selectedNameP1 = 0;
 		}
 		else if (players.size() == 1) {
 			std::cout << "Player 2: ";
+			selectedNameP2 = 1; // Must be set to one or else it will pick the name on slot 0 in the vector
 		}
 		else {
 			std::cout << "New name: ";
@@ -231,8 +233,12 @@ void createPlayerName() {
 
 		players.push_back(temp_player);
 
+
 		std::cout << std::endl;
 	} while (players.size() <= 1);
+
+	std::cout << players.at(0).name;
+		std::cout << players.at(1).name;
 
 	stats.close();
 }
