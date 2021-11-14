@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <ctime>
 
 // Making connect 4 shiddass
 
@@ -70,8 +71,7 @@ void drawBoard(); // draw the board
 void placeToken(char); // Place player token correctly
 void winConditions(); // Check for lines of 4, and change bools to true
 bool win = false;
-bool p1Win = false;
-bool p2Win = false;
+bool draw = false;
 void resetBoard(); // Empty the board of tokens
 
 // AI
@@ -212,8 +212,8 @@ void listOfExistingNames() {
 	
 void createPlayerName() {
 
-	Player temp_player;
 	do {
+		Player temp_player;
 		std::cout << "Who is gaming today?\n" << std::endl;
 		if (players.size() == 0) {
 			std::cout << "Player 1: ";
@@ -224,14 +224,14 @@ void createPlayerName() {
 		else {
 			std::cout << "New name: ";
 		}
-	std::cin >> temp_player.name;
-	temp_player.wins = 0;
-	temp_player.draws = 0;
-	temp_player.forfeits = 0;
+		std::cin >> temp_player.name;
+		temp_player.wins = 0;
+		temp_player.draws = 0;
+		temp_player.forfeits = 0;
 
-	players.push_back(temp_player);
+		players.push_back(temp_player);
 
-	std::cout << std::endl;
+		std::cout << std::endl;
 	} while (players.size() <= 1);
 
 	stats.close();
@@ -308,42 +308,50 @@ void gaming() {
 	while (yn == 'y')
 	{
 		win = false;
+		draw = false;
 		forfeit = false;
 
 		while (win != true) {
 			system("cls");
+
+			std::cout << turn << std::endl;
 
 			// Spelling out whose turn it is
 			switch (turn) {
 			case 1:
 				std::cout << "It is " << players.at(selectedNameP1).name << "'s turn.\n";
 				std::cout << "You place X\n" << std::endl;
+				std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
+				std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
+				std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
+				drawBoard();
+				winConditions();
+				move = _getch();
+				move = tolower(move);
 				break;
 			case 2:
-				std::cout << "It is " << players.at(selectedNameP1).name << "'s turn.\n" << std::endl;
+				std::cout << "It is " << players.at(selectedNameP2).name << "'s turn.\n" << std::endl;
 				std::cout << "You place O\n" << std::endl;
+				std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
+				std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
+				std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
+				if (players.at(selectedNameP2).name != "AI") {
+					drawBoard();
+					winConditions();
+					move = _getch();
+					move = tolower(move);
+				
+				}
+				// else if (ai)
+				if (players.at(selectedNameP2).name == "AI") {
+					RNGesus();
+					move = RNGesus();
+				}
 				break;
 			}
 		
-			// We will fund out how to give RNGesus life on a later time...
-			//if (Player.name == "AI" || Player.name == "Ai" || Player.name == "ai" || Player.name == "RNGesus") {
-			//	RNGesus();
-			//}
-
-			// if (human player)
-			std::cout << "Use 'a' or 'd' to move the pointer; 'v' left or right respectively.\n";
-			std::cout << "Then you can press ENTER or SPACE to select the highlighted column.\n";
-			std::cout << "Or you can use number keys 1 through 7 to instantly select the column you want" << std::endl;
-			drawBoard();
-			winConditions();
-			move = _getch();
-			move = tolower(move);
-			switch (move) {
-
-			// else if (ai)
-			// move = value returned by AI
-
 			// First two cases 'a' and 'd' allows user to move pointer left and right, respectively, over different columns
+			switch (move) {
 			case 'a':
 				arrowPosX--;
 				if (arrowPosX < 0) {
@@ -406,11 +414,21 @@ void gaming() {
 				std::cout << "Please use one of the specified inputs to navigate the board." << std::endl << std::endl;
 				break;
 			}
-			std::cout << arrowPosY << "\t" << arrowPosX << std::endl; // Fjærn når du er ferdig
+			if (draw == true) {
+				std::cout << "Draw" << std::endl;
+				break;
+			}
 		}
 		if (forfeit == true) {
 			std::cout << "Player forfeited the game.\n" << std::endl;
-			players.at(selectedNameP1).forfeits + 1;
+			switch (turn) {
+			case 1:
+				players.at(selectedNameP1).forfeits += 1;
+				break;
+			case 2:
+				players.at(selectedNameP2).forfeits += 1;
+				break;
+			}
 		}
 
 		std::cout << "Do you want to play another game?\nPress 'y' to start a new game" << std::endl;
@@ -424,11 +442,38 @@ void gaming() {
 
 // AI
 char RNGesus() {
-	char a = '1';
+	int a{};
+	char b{};
 
-	
+	std::srand(time(0));
+	a = rand() % 7 + 1;
 
-	return a;
+	switch (a) {
+	case 1:
+		b = '1';
+		break;
+	case 2:
+		b = '2';
+		break;
+	case 3:
+		b = '3';
+		break;
+	case 4:
+		b = '4';
+		break;
+	case 5:
+		b = '5';
+		break;
+	case 6:
+		b = '6';
+		break;
+	case 7:
+		b = '7';
+		break;
+	default:
+		break;
+	}
+	return b;
 }
 
 // Will move the token to the bottom of a column
@@ -496,11 +541,13 @@ void winConditions() {
 			if (board[y][x] != '.') {
 				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
 					std::cout << "P1 Vertical win" << std::endl;
+					players.at(selectedNameP1).wins += 1;
 					win = true;
 					break;
 				}
 				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x] && board[y + 1][x] == board[y + 2][x] && board[y + 2][x] == board[y + 3][x]) {
 					std::cout << "P2 Vertical win" << std::endl;
+					players.at(selectedNameP2).wins += 1;
 					win = true;
 					break;
 				}
@@ -514,11 +561,13 @@ void winConditions() {
 			if (board[y][x] != '.') { 
 				if (board[y][x] == 'X' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
 					std::cout << "P1 Horizontal win" << std::endl;
+					players.at(selectedNameP1).wins += 1;
 					win = true;
 					break;
 				}
 				if (board[y][x] == 'O' && board[y][x] == board[y][x + 1] && board[y][x + 1] == board[y][x + 2] && board[y][x + 2] == board[y][x + 3]) {
 					std::cout << "P2 Horizontal win" << std::endl;
+					players.at(selectedNameP2).wins += 1;
 					win = true;
 					break;
 				}
@@ -532,11 +581,13 @@ void winConditions() {
 			if (board[y][x] != '.') {
 				if (board[y][x] == 'X' && board[y][x] == board[y + 1][x + 1] && board[y +1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
 					std::cout << "P1 Diagonal leaning left win" << std::endl;
+					players.at(selectedNameP1).wins += 1;
 					win = true;
 					break;
 				}
 				if (board[y][x] == 'O' && board[y][x] == board[y + 1][x + 1] && board[y + 1][x + 1] == board[y + 2][x + 2] && board[y + 2][x + 2] == board[y + 3][x + 3]) {
 					std::cout << "P2 Diagonal leaning left win" << std::endl;
+					players.at(selectedNameP2).wins += 1;
 					win = true;
 					break;
 				}
@@ -550,15 +601,30 @@ void winConditions() {
 			if (board[y][x] != '.') {
 				if (board[y][x] == 'X' && board[y][x] == board[y - 1][x + 1] && board[y - 1][x + 1] == board[y - 2][x + 2] && board[y - 2][x + 2] == board[y - 3][x + 3]) {
 					std::cout << "P1 Diagonal leaning right win" << std::endl;
+					players.at(selectedNameP1).wins += 1;
 					win = true;
 					break;
 				}
 				if (board[y][x] == 'O' && board[y][x] == board[y - 1][x + 1] && board[y - 1][x + 1] == board[y - 2][x + 2] && board[y - 2][x + 2] == board[y - 3][x + 3]) {
 					std::cout << "P2 Diagonal leaning right win" << std::endl;
+					players.at(selectedNameP2).wins += 1;
 					win = true;
 					break;
 				}
 			}
+		}
+	}
+
+	// Check for draw
+	int drawCount = 0;
+	for (int x = 0; x < board.at(1).size(); x++) {
+		if (board[1][x] != '.') {
+			drawCount += 1;
+		}
+		if (drawCount == 7) {
+			players.at(selectedNameP1).draws += 1;
+			players.at(selectedNameP2).draws += 1;
+			draw = true;
 		}
 	}
 }
