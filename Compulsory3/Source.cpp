@@ -437,12 +437,11 @@ void gaming() {
 			}
 		}
 
+		resetBoard();
+		
 		std::cout << "Do you want to play another game?\nPress 'y' to start a new game" << std::endl;
 		
 		std::cin >> yn;
-		if (yn == 'y') {
-			resetBoard();
-		}
 	}
 }
 
